@@ -582,13 +582,6 @@ local function init(conf,utils,level)
       scaleLabel = tostring((unitScale==1 and 1 or 3)*50*2^(20-level))..unitLabel
       scaleLen = ((unitScale==1 and 1 or 3)*50*2^(20-level)/tile_dim)*100
     end
-
-    -- m to km if more than 1000
-    if scaleLen > 1000 and GetGeneralSettings().imperial == 0 then
-      scaleLen /= 1000
-      scaleLabel = "k"..scaleLabel
-    end
-
     lastZoomLevel = level
   end
 end

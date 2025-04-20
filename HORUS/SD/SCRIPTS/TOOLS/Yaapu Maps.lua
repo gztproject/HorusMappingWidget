@@ -122,7 +122,8 @@ local function updateMenuItems()
         menuItems[idx2][5] = { "GoogleSatelliteMap", "GoogleHybridMap", "GoogleMap", "GoogleTerrainMap" }
         menuItems[idx2][6] = { "GoogleSatelliteMap", "GoogleHybridMap", "GoogleMap", "GoogleTerrainMap" }
       elseif value == 3 then -- OSM
-        menuItems[idx2][5] = { "thunderforest", "Thunderforest", "thunder" }        
+        menuItems[idx2][5] = { "Thunderforest" }        
+        menuItems[idx2][6] = { "thunderforest" }        
       end
 
       if menuItems[idx2][4] > #menuItems[idx2][5] then
@@ -142,9 +143,9 @@ local function updateMenuItems()
         menuItems[idx2][6] = 20
         menuItems[idx2][4] = math.max(value2,1)
       elseif value == 3 then -- OSM
-        menuItems[idx2][5] = 0
+        menuItems[idx2][5] = 1
         menuItems[idx2][6] = 22
-        menuItems[idx2][4] = math.max(value2,0)
+        menuItems[idx2][4] = math.max(value2,1)
       end
     end
 
@@ -160,7 +161,7 @@ local function updateMenuItems()
         menuItems[idx2][6] = 20
         menuItems[idx2][4] = math.min(value2,20)
       elseif value == 3 then -- OSM
-        menuItems[idx2][5] = 0
+        menuItems[idx2][5] = 1
         menuItems[idx2][6] = 22
         menuItems[idx2][4] = math.max(value2,22)      
       end
