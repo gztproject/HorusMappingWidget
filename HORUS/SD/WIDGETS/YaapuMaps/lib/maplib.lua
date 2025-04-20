@@ -108,7 +108,9 @@ end
 local function tiles_on_level(conf,level)
   if conf.mapProvider == 1 then
     return bit32.lshift(1,17 - level)
-  else
+  elseif conf.mapProvider == 2 then
+    return 2^level
+  elseif conf.mapProvider == 3 then
     return 2^level
   end
 end
@@ -169,12 +171,37 @@ local function gmapcatcher_coord_to_tiles(conf, lat, lon, level)
   return math.floor(x % world_tiles), math.floor(y % world_tiles), math.floor((x - math.floor(x)) * 100), math.floor((y - math.floor(y)) * 100)
 end
 
+--[[
+https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+function deg2num(lon, lat, zoom)
+  local n = 2 ^ zoom
+  local lon_deg = tonumber(lon)
+  local lat_rad = math.rad(lat)
+  local xtile = math.floor(n * ((lon_deg + 180) / 360))
+  local ytile = math.floor(n * (1 - (math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi)) / 2)
+  return xtile, ytile
+end
+]]--
+
+local function osm_coord_to_tiles(conf, lat, lon, level)
+  local n = 2 ^ level
+  local lon_deg = tonumber(lon)
+  local lat_rad = math.rad(lat)
+  local xtile = math.floor(n * ((lon_deg + 180) / 360))
+  local ytile = math.floor(n * (1 - (math.log(math.tan(lat_rad) + (1 / math.cos(lat_rad))) / math.pi)) / 2)
+  return xtile, ytile
+end
+
 local function google_tiles_to_path(conf, tile_x, tile_y, level)
   return string.format("/%d/%d/s_%d.jpg", level, tile_y, tile_x)
 end
 
 local function gmapcatcher_tiles_to_path(conf, tile_x, tile_y, level)
   return string.format("/%d/%d/%d/%d/s_%d.png", level, tile_x/1024, tile_x%1024, tile_y/1024, tile_y%1024)
+end
+
+local function osm_tiles_to_path(conf, tile_x, tile_y, level)
+  return string.format("/%d/%d/%d.png", level, tile_x, tile_y)
 end
 
 local function getTileBitmap(conf,tilePath)
@@ -340,7 +367,20 @@ local function init(conf,utils,level)
       tile_dim = (40075017/world_tiles) * unitScale -- m or ft
       scaleLabel = tostring((unitScale==1 and 1 or 3)*50*2^(20-level))..unitLabel
       scaleLen = ((unitScale==1 and 1 or 3)*50*2^(20-level)/tile_dim)*100
+    elseif conf.mapProvider == 3 then
+      coord_to_tiles = osm_coord_to_tiles
+      tiles_to_path = osm_tiles_to_path
+      tile_dim = (40075017/world_tiles) * unitScale -- m or ft
+      scaleLabel = tostring((unitScale==1 and 1 or 3)*50*2^(20-level))..unitLabel
+      scaleLen = ((unitScale==1 and 1 or 3)*50*2^(20-level)/tile_dim)*100
     end
+
+    -- m to km if more than 1000
+    if scaleLen > 1000 and GetGeneralSettings().imperial == 0 then
+      scaleLen /= 1000
+      scaleLabel = "k"..scaleLabel
+    end
+    
     lastZoomLevel = level
   end
 end

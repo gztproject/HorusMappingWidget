@@ -60,7 +60,7 @@ local menuItems = {
   {"home reset channel:", 0, "HRST", 0, 0, 32,nil,0,1 },
   {"telemetry sensor config file:", 1, "SEN", 1, { "per model", "global profile 1", "global profile 2", "global profile 3" }, { 0, 1, 2, 3 } },
   {"air/groundspeed unit:", 1, "HSPD", 1, { "m/s", "km/h", "mph", "kn" }, { 1, 3.6, 2.23694, 1.94384} },
-  {"map provider:", 1, "MAPP", 1, { "GMapCatcher", "Google" }, { 1, 2 } },
+  {"map provider:", 1, "MAPP", 1, { "GMapCatcher", "Google", "OSM" }, { 1, 2, 3 } },
   {"map type:", 1, "MAPT", 1, { "", "", "", "" }, { "", "", "", "" } },
   {"map grid lines:", 1, "MAPG", 1, { "yes", "no" }, { true, false } },
   {"map trail dots:", 0, "MAPTD", 10, 5, 50,nil,0,1 },
@@ -121,6 +121,9 @@ local function updateMenuItems()
       elseif value == 2 then -- Google
         menuItems[idx2][5] = { "GoogleSatelliteMap", "GoogleHybridMap", "GoogleMap", "GoogleTerrainMap" }
         menuItems[idx2][6] = { "GoogleSatelliteMap", "GoogleHybridMap", "GoogleMap", "GoogleTerrainMap" }
+      elseif value == 3 then -- OSM
+        menuItems[idx2][5] = { "Thunderforest" }
+        menuItems[idx2][6] = { "Thunderforest" }
       end
 
       if menuItems[idx2][4] > #menuItems[idx2][5] then
@@ -135,10 +138,14 @@ local function updateMenuItems()
         menuItems[idx2][5] = -2
         menuItems[idx2][6] = 17
         menuItems[idx2][4] = math.max(value2,-2)
-      else                      -- Google
+      elseif value == 2 then   -- Google
         menuItems[idx2][5] = 1
         menuItems[idx2][6] = 20
         menuItems[idx2][4] = math.max(value2,1)
+      elseif value == 3 then -- OSM
+        menuItems[idx2][5] = 0
+        menuItems[idx2][6] = 22
+        menuItems[idx2][4] = math.max(value2,0)
       end
     end
 
@@ -149,10 +156,14 @@ local function updateMenuItems()
         menuItems[idx2][5] = -2
         menuItems[idx2][6] = 17
         menuItems[idx2][4] = math.min(value2,17)
-      else                      -- Google
+      elseif value == 2 then    -- Google
         menuItems[idx2][5] = 1
         menuItems[idx2][6] = 20
         menuItems[idx2][4] = math.min(value2,20)
+      elseif value == 3 then    -- OSM
+        menuItems[idx2][5] = 0
+        menuItems[idx2][6] = 22
+        menuItems[idx2][4] = math.max(value2,22)            
       end
     end
 
